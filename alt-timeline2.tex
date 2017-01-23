@@ -18,6 +18,7 @@
 \usepackage{fontspec}
 \setmainfont[Numbers=OldStyle]{Linux Libertine O}
 \setsansfont[Numbers=OldStyle]{Source Sans Pro}
+\newfontfamily\arabicfont[Scale=1.2]{Amiri}
 
 % Constants
 \def\startce{600}
@@ -35,8 +36,8 @@
 % \grammarian[horizontal offset][east]{<name>}{<yod c.e.>}{<opus magnus>}
 \newcommand\person[4][0]{
     % Name and yod on top
-    \path [draw] (#3,6.5) ++ (#1,0) node [rotate=-90, anchor=west] (name) {#2,~d.\hspace{1.5pt}#3};
-    \draw [thin] (name.east) |- (#3,1.5) -- (#3,0) ;
+    \path [draw] (#3,6.5) ++ (# 1,0) node [rotate=-90, anchor=west] (name) {#2,~d.\hspace{1.5pt}#3};
+    \draw [thin] (name.east) -- (#3,0) ;
     % Work below
     \node [font=\itshape, rotate=-90, anchor=west, yshift=#1] (work) at (#3,-2\baselineskip) {#4};
 }
@@ -177,7 +178,7 @@ This timeline is based primarily on \textit{The Arabic Linguistic Tradition} by 
 Written by Andras Hallberg.
 This document is licensed under a Creative Commons Attribution 4.0 International license. 
 It is available for download at \url{http://andreasmhallberg.github.io/images/alt-timeline.pdf}.
-For suggestions on improvements, contact the author at \href{mailto:andreasmartenhallberg@gmail.com}{\itshape andreasmartenhallberg@gmail.com}.
+For suggestions on improvements, contact the author at \href{mailto:andreas.hallberg@mellost.lu.se}{\itshape andreas.hallberg@mellost.lu.se}.
 \end{minipage}
 \vspace{-1cm}
 \end{document}
