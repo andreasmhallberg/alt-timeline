@@ -3,12 +3,12 @@
 \usepackage[top=2cm, bottom=2cm, left=2cm, right=2cm]{geometry}
 \usepackage{etoolbox}
 \usepackage{graphicx}
+\usepackage{ifthen}
 \usepackage{footnote} % to save and spew notes
 \usepackage{calc}
 \usepackage[hidelinks]{hyperref}
 \def\UrlFont{\rmfamily\itshape} % roman font in urls
 \usepackage{ragged2e}
-\usepackage[dvipsnames]{xcolor}
 \usepackage{tikz}
 \usepackage{varwidth} % nodes size with adjusted width
 \usetikzlibrary{calc, backgrounds}
@@ -18,18 +18,24 @@
 
 \usepackage{fontspec}
 \setmainfont[Numbers=OldStyle]{Linux Libertine O}
-\setsansfont[Numbers=OldStyle]{Source Sans Pro ExtraLight}
+\setsansfont[Numbers=OldStyle]{Source Sans Pro}
 
 % Constants
 \def\startce{600}
 \def\fince{1550}
 
 \frenchspacing
-	
-% Vertical position of beginning of name
-\newlength\nameh
-\setlength\nameh{6.1cm}
 
+\tikzstyle{nodedefault} = [
+    inner sep=1pt
+    , outer sep=0pt
+    , rotate = -90
+]
+
+%Verticalal position of beginning of name
+% \newlw
+	
+% Thickness of dynasty bar
 \newlength\dynastyheight
 \setlength\dynastyheight{.4cm}
 \newlength\dynastyvshift
@@ -37,13 +43,27 @@
 
 \newlength\dynwidth
 
-% \grammarian[horizontal offset][east]{<name>}{<yod c.e.>}{<opus magnus>}
-\newcommand\person[4][0]{
+% \grammarian[horizontal offset, or `adj`]{<name>}{<yod c.e.>}{<opus magnus>}{<school (B/Q)>}
+\newcommand\person[5][0pt]{
     % Name and yod on top
-    \path [draw] (#3,\nameh) ++ (#1,0) node [rotate=-90, anchor=west] (name) {\makebox[2.5em][l]{\textcolor{black!30}{#3}}#2};
-    \draw [thin] (name.east) |- (#3,1.5) -- (#3,0) ;
+    \ifthenelse{\equal{#1}{adj}}
+    {
+	\path (name.north west) 
+	node [nodedefault, anchor=south west] (name) {#2};
+    }
+    {
+        \path (#3,6.5) ++ (#1,0)
+	    node [nodedefault, anchor=west] (name) {#2};
+    }
+
     % Work below
-    \node [font=\itshape, rotate=-90, anchor=west, yshift=#1] (work) at (#3,-2\baselineskip) {#4};
+    \path let \p1 = (name) in (\x1,-2\baselineskip)
+       node [font=\itshape, rotate=-90, anchor=west] (work) {#4};
+
+    \draw [thin] (name.east) -- (#3,0) ;
+
+    \node at (name.west) [anchor = south, color=black!30] {\MakeLowercase{\textsc{#5}}};
+
 }
 
 \newcommand\infobox[1]{%
@@ -70,7 +90,7 @@
 % phases
 % \phase{<name>}{<begin>}{<end>}
 \newcommand{\phase}[3]{
-    \draw [thin] (#2+2, \nameh+2mm) -- (#2+2, \nameh+4mm) -- (#3-2, \nameh+4mm) node [midway, above, align=center, font=\sffamily] {#1} -- (#3-2, \nameh+2mm);
+\draw [color=black!30, yshift=4mm] (#2+2, 6.8) -- (#2+2, 7) -- (#3-2, 7) node [midway, above, align=center, font=\sffamily] {#1} -- (#3-2, 6.8);
 }
 
 
@@ -93,7 +113,7 @@ This timeline is based primarily on \textit{The Arabic Linguistic Tradition} by 
 
 \begin{tikzpicture}[x=\textwidth/(\fince-\startce)]
 
-    \node at (650,\nameh-1ex) [anchor=north, color=black!30] {\textsc{yod}};
+    \node at (622,6.5) [anchor=south, align=center, color=black!30] {\small Baṣran/Kufan};
 
 % Sort the list below with `sort n /{/`
 
@@ -107,41 +127,43 @@ This timeline is based primarily on \textit{The Arabic Linguistic Tradition} by 
 
 
 % List of grammarians
-    \person{Abū l-Aswad ad-Duʾalī}{688}{}
-    \person{\llap{ʿ}Abd Allāh ibn Abī Isḥāq}{734}{} % p.1
-    % \person[-1.7ex]{al-Xalil}{786}{Kitāb al-ʿAyn}
-    \person{Sībawayhi}{798}{al-Kitāb} % p. 1. In Carter (2004:15) 796
-    \person{al-Farrāʾ}{822}{Maʿānī al-Qurʾān} % p.5
-    \person[.7ex]{al-Axfaš al-Awsaṭ}{830}{Maʿānī al-Qurʾān} % p.5 835. EI 830
+    \person{Abū l-Aswad ad-Duʾalī}{688}{}{}
+    \person{ʿAbd Allāh ibn Abī Isḥāq}{734}{}{} % p.1
+    \person[-1ex]{al-Xalīl}{786}{Kitāb al-ʿAyn}{}
+    \person[adj]{Sībawayhi}{798}{al-Kitāb}{B} % p. 1. In Carter (2004:15) 796
+    \person[adj]{al-Kisāʾī}{805}{}{K} 
+    \person[adj]{al-Farrāʾ}{822}{Maʿānī al-Qurʾān}{K} % p.5
+    \person[adj]{al-Axfaš al-Awsaṭ}{830}{Maʿānī al-Qurʾān}{B} % p.5 835. EI 830
     % \person{al-Aṣmaʿī}{828}{}
-    \person[-1.5ex]{al-Mubarrad}{898}{Kitāb al-Muqtaḍab}
-    \person{Ṯaʿlab}{904}{} % p.7
-    \person{Ibn as-Sarrāj}{928}{Kitāb al-Uṣūl} 
+    \person[adj]{Ibn as-Sikkīt}{850}{}{K}
+    \person[-1ex]{al-Mubarrad}{898}{Kitāb al-Muqtaḍab}{B}
+    \person[adj]{Ṯaʿlab}{904}{}{K} % p.7
+    \person{Ibn as-Sarrāj}{928}{Kitāb al-Uṣūl}{B}
     % \infobox{\textit{First expression of final canonical grammar.}}
-    \person{az-Zajjājī}{951}{Kitāb al-Iḍāḥ} % p 11
-    \person{as-Sirāfī}{979}{Šarḥ kitāb Sībawayhi} % p.14 in passing
-    \person{ar-Rummānī}{994}{Šarḥ kitāb Sībawayhi} % p.14 in passing
-    \person[1ex]{Ibn Jinnī}{1002}{al-Xaṣāʾiṣ}
+    \person{az-Zajjājī}{951}{Kitāb al-Iḍāḥ}{B} % p 11
+    \person{as-Sirāfī}{979}{Šarḥ kitāb Sībawayhi}{B} % p.14 in passing
+    \person{ar-Rummānī}{994}{Šarḥ kitāb Sībawayhi}{} % p.14 in passing
+    \person[adj]{Ibn Jinnī}{1002}{al-Xaṣāʾiṣ}{}
     % \person[-2ex]{Ibn Bābašāḏ}{1077}{}
-    \person{al-Jurjānī}{1078}{Dalāʾil al-iʿjāz}
+    \person{al-Jurjānī}{1078}{Dalāʾil al-iʿjāz}{}
     % \infobox{\textit{with Jurjânî (d.1078) Arabic theory had reached its most sophisticated level} \citep{owens_foundations_1988}}
-    \person{Ibn Maḍāʾ}{1196}{ar-Radd ʿalā an-nuḥāt} % p.58 1208. Versteegh (2013:208) 1196
-    \person{Abū l-Barakāt al-Anbārī}{1181}{Lumaʿ al-adilla} % p.17
-    \person{az-Zamaxšarī}{1143}{al-Mufaṣṣal} % p. 118
-    \person{Ibn Yaʿīsh}{1245}{Šarḥ al-Mufaṣṣal}
+    \person{Ibn Maḍāʾ}{1196}{ar-Radd ʿalā an-nuḥāt}{} % p.58 1208. Versteegh (2013:208) 1196
+    \person{Abū l-Barakāt al-Anbārī}{1181}{Lumaʿ al-adilla}{} % p.17
+    \person{az-Zamaxšarī}{1143}{al-Mufaṣṣal}{} % p. 118
+    \person{Ibn Yaʿīsh}{1245}{Šarḥ al-Mufaṣṣal}{}
     % \person{Ibn al-Ḥājib}{1249}{al-Kāfiya}
     % \infobox{\textit{Apogee of pedagogical grammars} \citep{carter_grammatical_2006}}
-    \person[-2ex]{Ibn ʿUṣfur}{1271}{Mumtiʿ  fī t-taṣrīf} % p.73
-    \person{Ibn Mālik}{1274}{al-Alfiyya}
-    \person{al-Astarābāḏī}{1287}{Šarḥ al-Kāfiya}
-    \person{Ibn Ājurrūm}{1323}{al-Ājurrūmiyya} % IE
-    \person{Ibn Hišām}{1359}{Muġnī l-labīb} % p.14
-    \person[1ex]{Ibn ʿAqīl}{1367}{Šarḥ al-Alfiyya} % p.14
-    \person[-.5ex]{al-Ašmūnī}{1494}{Šarḥ al-Alfiyya} % p.14
-    \person{as-Suyūṭī}{1505}{al-Muzhir} % IE
+    \person[-1.5ex]{Ibn ʿUṣfur}{1271}{Mumtiʿ  fī t-taṣrīf}{} % p.73
+    \person[adj]{Ibn Mālik}{1274}{al-Alfiyya}{}
+    \person[adj]{al-Astarābāḏī}{1287}{Šarḥ al-Kāfiya}{}
+    \person{Ibn Ājurrūm}{1323}{al-Ājurrūmiyya}{} % IE
+    \person{Ibn Hišām}{1359}{Muġnī l-labīb}{} % p.14
+    \person[adj]{Ibn ʿAqīl}{1367}{Šarḥ al-Alfiyya}{} % p.14
+    \person{al-Ašmūnī}{1494}{Šarḥ al-Alfiyya}{} % p.14
+    \person[adj]{as-Suyūṭī}{1505}{al-Muzhir}{} % IE
     
     % \dynasty{Muḥammad}{622}{632}
-    \dynasty    {OliveGreen}   {Ummayads}      {661}    {750}      {1}
+    \dynasty    {green}   {Ummayads}      {661}    {750}      {1}
     %\dynasty   {blue}    {ar-Rāšhidun}   {632}    {661}      {1}
     \dynasty    {red}     {Abbasids}      {750}    {1258}     {1}
     \dynasty    {black}   {Fatimids}      {909}    {1171}     {2}
@@ -167,10 +189,6 @@ This timeline is based primarily on \textit{The Arabic Linguistic Tradition} by 
 	\foreach \x in {700,800,...,\fince} 
 	    {\draw (\x, 0) -- (\x,-.2) node [anchor=north, font=\bfseries] {\x};}
 
-	% Axis tick on 50s
-	\foreach \x in {650,675,...,1525} 
-	    {\draw (\x, 0) -- (\x,-.1);}
-
 	% Hijra
 	\draw [very thick] (622, .2) -- (622, -.5) 
 	  node [rotate=-90, anchor=west] {\textbf{\textit{al-Hijra}}~(622)};
@@ -192,3 +210,4 @@ For suggestions on improvements, contact the author at \href{mailto:andreasmarte
 \end{minipage}
 \vspace{-1cm}
 \end{document}
+
