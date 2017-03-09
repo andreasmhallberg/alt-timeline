@@ -24,6 +24,9 @@
 \def\startce{600}
 \def\fince{1550}
 
+% Color to mix in with dynasty. 70%
+\def\mixcolor{gray}
+
 \frenchspacing
 	
 % Vertical position of beginning of name
@@ -40,7 +43,7 @@
 % \grammarian[horizontal offset][east]{<name>}{<yod c.e.>}{<opus magnus>}
 \newcommand\person[4][0]{
     % Name and yod on top
-    \path [draw] (#3,\nameh) ++ (#1,0) node [rotate=-90, anchor=west] (name) {\makebox[2.5em][l]{\textcolor{black!30}{#3}}#2};
+    \path [draw] (#3,\nameh) ++ (#1,0) node [rotate=-90, anchor=west] (name) {\makebox[2.5em][l]{#3}#2};
     \draw [thin] (name.east) |- (#3,1.5) -- (#3,0) ;
     % Work below
     \node [font=\itshape, rotate=-90, anchor=west, yshift=#1] (work) at (#3,-2\baselineskip) {#4};
@@ -58,7 +61,7 @@
 \newcommand\dynasty[5]{%
 \begin{pgfonlayer}{background}
     % bar
-    \draw [yshift=\dynastyvshift+#5\dynastyheight, line width=\dynastyheight, color=#1!30]
+    \draw [yshift=\dynastyvshift+#5\dynastyheight, line width=\dynastyheight, color=#1!30!\mixcolor]
     (#3,0) -- (#4,0);
     % label
     \node [white, yshift=\dynastyvshift+#5\dynastyheight, font=\sffamily] 
@@ -81,7 +84,7 @@
 
 \begin{minipage}[t]{.4\textwidth}
 {\LARGE Timeline of Arab grammarians\\and their major works}\\[\medskipamount]
-\textit{v.1.2\\\today}
+\textit{v.1.4\\\today}
 \end{minipage}
 \hfill
 \begin{minipage}[t]{.38\textwidth}
@@ -93,7 +96,7 @@ This timeline is based primarily on \textit{The Arabic Linguistic Tradition} by 
 
 \begin{tikzpicture}[x=\textwidth/(\fince-\startce)]
 
-    \node at (650,\nameh-1ex) [anchor=north, color=black!30] {\textsc{yod}};
+    \node at (650,\nameh-1ex) [anchor=north] {\textsc{yod}};
 
 % Sort the list below with `sort n /{/`
 
@@ -131,7 +134,7 @@ This timeline is based primarily on \textit{The Arabic Linguistic Tradition} by 
     \person{Ibn Yaʿīsh}{1245}{Šarḥ al-Mufaṣṣal}
     % \person{Ibn al-Ḥājib}{1249}{al-Kāfiya}
     % \infobox{\textit{Apogee of pedagogical grammars} \citep{carter_grammatical_2006}}
-    \person[-2ex]{Ibn ʿUṣfur}{1271}{Mumtiʿ  fī t-taṣrīf} % p.73
+    \person[-2ex]{Ibn ʿUṣfur}{1271}{al-Mumtiʿ  fī t-taṣrīf} % p.73
     \person{Ibn Mālik}{1274}{al-Alfiyya}
     \person{al-Astarābāḏī}{1287}{Šarḥ al-Kāfiya}
     \person{Ibn Ājurrūm}{1323}{al-Ājurrūmiyya} % IE
@@ -152,7 +155,7 @@ This timeline is based primarily on \textit{The Arabic Linguistic Tradition} by 
   \begin{pgfonlayer}{background}
       % bar
       \draw [ultra thin,yshift=\dynastyvshift, 
-          xshift=-.1pt, fill=blue!30,color=blue!30]
+          xshift=-.1pt, fill=blue!30!\mixcolor,color=blue!30!\mixcolor]
       (\fince,.5\dynastyheight) 
       -- ++ (.5\dynastyheight,.5\dynastyheight)
       -- ++ (-.5\dynastyheight,.5\dynastyheight) 
